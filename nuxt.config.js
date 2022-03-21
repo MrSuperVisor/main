@@ -72,5 +72,18 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-  }
+  },
+
+  hooks: {
+    render: {
+      errorMiddleware(app) {
+        app.use((error, _req, _res, next) => {
+          if (error) {
+            console.log("Logged in errorMiddleware", error);
+          }
+          next(error);
+        });
+      },
+    },
+  },
 }

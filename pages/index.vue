@@ -4,29 +4,26 @@
       <v-app-bar-title>NuxtJS simple gallery</v-app-bar-title>
     </v-app-bar>
     <div class="layout">
-      <ImageCard v-for="image in images" :key="image.id" :imgId="image.id" :title="image.title" :thumbUrl="image.thumbnailUrl" @click="getMore()"/>
-      <infinite-loading 
+      <ImageCard v-for="image in images" :key="image.id" :imgId="image.id" :title="image.title" :thumbUrl="image.thumbnailUrl"/>
+      <v-btn @click="notEnouhth">Загрузить еще</v-btn>
+      <!--infinite-loading 
         spinner="spiral"
-        @infinite="notEnouhth"
-      ></infinite-loading>
+        @infinite="notEnouhth" 
+      ></infinite-loading-->
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 
 export default Vue.extend({
   head: {
     title: "Vue 2 + Nuxt gallery"
   },
-  computed: {
-    images() {
-      return this.$store.getters['getImages']
-    }
-  },
+
   methods: {
     ...mapActions({
       getMore: 'getMore'
@@ -41,10 +38,11 @@ export default Vue.extend({
       }
     }
   },
-  mounted() {
-    if (this.$store.getters['getImages'].length == 0) {
-      this.$store.dispatch('initiateGet')
-    }
+  computed: {
+    ...mapGetters(["images"])
+  },
+  async fetch() {
+    await this.getMore()
   }
 })
 </script>

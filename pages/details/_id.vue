@@ -4,15 +4,14 @@
       <v-app-bar-title>NuxtJS simple gallery</v-app-bar-title>
     </v-app-bar>
     <v-container md-12>
-      
       <v-row>
         <v-col col-6>
-          <v-img :lazy-src="imageDetails.imgLazy" :src="imageDetails.imgHref"/>
+          <v-img :lazy-src="imageDetails.thumbnailUrl" :src="imageDetails.url"/>
         </v-col>
         <v-col col-12>
-          <h2>{{imageDetails.imgTitle}}</h2>
-          <h5 >альбом: {{imageDetails.albumName}}</h5>
-          <h4>Автор: {{imageDetails.authorName}}</h4>
+          <h2 v-if="imageDetails != undefined">{{imageDetails.title}}</h2>
+          <h5 v-if="imageDetails.album != undefined">альбом: {{imageDetails.album.title}}</h5>
+          <h4 v-if="imageDetails.author != undefined">Автор: {{imageDetails.author.name}}</h4>
           <v-btn @click="goBack">Назад</v-btn>
         </v-col>
       </v-row>
@@ -22,6 +21,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { mapActions, mapGetters } from 'vuex'
 
 export default Vue.extend({
   head() {
@@ -29,37 +29,36 @@ export default Vue.extend({
       title: `Изображение №${this.$route.params.id}`
     }
   },
-  data() {
-      return {
-          imageDetails: {
-              id: this.$route.params.id,
-              imgTitle: "",
-              imgHref: "",
-              imgLazy:"",
-              albumId: null,
-              albumName: "",
-              userId: null,
-              authorName: ""
-      }}
+  methods: {
+    ...mapActions(["fillPhotoDetails"]),
+
+    goBack() {
+      if (this.$nuxt.context.from?.path == "/") {
+        this.$router.go(-1)
+      } else {
+        this.$router.push('/')
+      }
+    }
+      
+  },
+  computed: {
+    imageDetails: function() {
+      if (this.$route.params.id) {
+        return this.$store.getters['getImageByID'](this.$route.params.id)
+      } else {
+        return this.$nuxt.error({ statusCode: 404})
+      }
+    }
+    
   },
 
   async fetch() {
-    const imd = this.imageDetails
-    const main = this.$store.getters['getImageByID'](imd.id) || 
-        (await this.$axios.get(`https://jsonplaceholder.typicode.com/photos?id=${imd.id}`)).data[0]
-    this.imageDetails =  {...this.imageDetails, imgHref: main.url, imgLazy: main.thumbnailUrl, albumId: main.albumId, imgTitle: main.title}
-    const details = (await this.$axios.get(`https://jsonplaceholder.typicode.com/albums?id=${this.imageDetails.albumId}`)).data[0]
-    this.imageDetails =  {...this.imageDetails, userId: details.userId, albumName: details.title}
-    this.imageDetails.authorName = (await this.$axios.get(`https://jsonplaceholder.typicode.com/users?id=${this.imageDetails.userId}`)).data[0].name
-    
+    if (this.$route.params.id) {
+      await this.fillPhotoDetails(this.$route.params.id)           
+    } else {
+      return this.$nuxt.error({ statusCode: 404})
+    }
   },
   
-  methods: {
-    goBack() {
-      this.$router.go(-1)
-    }
-      
-  }
-
 })
 </script>
