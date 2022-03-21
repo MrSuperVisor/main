@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <notifications />
     <v-main>
         <Nuxt />
     </v-main>

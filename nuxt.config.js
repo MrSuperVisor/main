@@ -25,7 +25,10 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    { src: '@/plugins/infiniteloading', ssr: false }
+    { src: '@/plugins/infiniteloading', ssr: false },
+    { src: '@/plugins/axios.js'},
+    { src: '~/plugins/notifications-ssr', ssr: true },
+    { src: '~/plugins/notifications-client', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -42,7 +45,8 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios',
+    '@nuxtjs/axios'
+    
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

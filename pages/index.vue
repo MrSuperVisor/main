@@ -5,7 +5,7 @@
     </v-app-bar>
     <div class="layout">
       <ImageCard v-for="image in images" :key="image.id" :imgId="image.id" :title="image.title" :thumbUrl="image.thumbnailUrl"/>
-      <v-btn @click="notEnouhth">Загрузить еще</v-btn>
+      <v-btn @click="getMore">Загрузить еще</v-btn>
       <!--infinite-loading 
         spinner="spiral"
         @infinite="notEnouhth" 
@@ -53,7 +53,5 @@ export default Vue.extend({
         gap: 1em;
         grid-template-columns: repeat(auto-fit, minmax(10em, 20em));
         justify-content: center;
-    }
-
-    
+    }    
 </style>

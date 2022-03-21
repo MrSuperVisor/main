@@ -25,8 +25,8 @@ export default {
   },
   data () {
     return {
-      pageNotFound: 'Упс, промазали.',
-      otherError: 'Баги на багах багами погоняют'
+      pageNotFound: 'Page no found',
+      otherError: 'Some bugs found'
     }
   },
   head () {
@@ -35,13 +35,24 @@ export default {
     return {
       title
     }
-  }
+  },
+
+  mounted: () => {
+        setTimeout(() => {
+            this.$router.replace({path: '/'})
+        }, 3000);
+        
+    }
 }
 </script>
 
 <style scoped>
 .space {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 h1 {
   font-size: 20px;
